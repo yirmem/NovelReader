@@ -1,0 +1,19 @@
+{
+  "name": "novel-reader",
+  "version": "1.0.0",
+  "description": "小说阅读器",
+  "main": "index.js",
+  "author": "ShengBin",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "electron": "^2.0.2",
+    "jquery": "^3.3.1"
+  },
+  "scripts": {
+    "start": "electron .",
+    "packager": "electron-packager ./ novel-reader --all --out ./outApp --overwrite "
+  },
+  "devDependencies": {
+    "electron-packager": "^12.1.0"
+  }
+}
