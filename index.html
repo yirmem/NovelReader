@@ -9,7 +9,7 @@
       </script>
       <script type="text/javascript" src="jquery.min.js"></script>
       <meta charset="UTF-8">
-      <title>Hello World!</title>
+      <title>小说阅读器</title>
       <style type="text/css">
         .container{
           border: 1px solid #000;
@@ -44,18 +44,43 @@
       
     </body>
     <script type="text/javascript">
-      function searchBtnClick(){
-        $.ajax({
-          url:'http://www.baidu.com/s?wd='+'放开那个女巫'+'&pn=30&rsv_spt=1&rsv_iqid=0xdd2c31de0003d13c&issp=1&f=3&rsv_bp=0&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=0&rsv_sug3=19&rsv_sug1=16&rsv_sug7=100&prefixsug='+'放开那个女巫'+'&rsp=8&inputT=6040&rsv_sug4=7275',
-          type:"GET",
-          async:false,
-          dataType:"text",
-          success:function(msg){
-            var reg = /"title":"(.*?)","url":"(.*?)"}/;
-            var re = new RegExp()
-            $(".content").text(msg)
-          }
-        })
+      function processData(resultMsg){
+        var titleStart = resultMsg.indexOf('"title":"')
+        var titleEnd = resultMsg.indexOf('","url":"')
+        var titleList = '<a href="#">' + resultMsg.substring(titleStart+9,titleEnd) + '</a>'
+        while(titleStart!=-1){
+          titleStart = resultMsg.indexOf('"title":"',titleStart+10)
+          titleEnd = resultMsg.indexOf('","url":"',titleEnd+10)
+          titleList += '<a href="#">' + resultMsg.substring(titleStart+9,titleEnd) + '</a>' + "<br />"
+        }
+        return titleList
+              
+              //$(".content").html(titleList)
       }
+      function searchBtnClick(){
+        var novelName = $('#novelNameInput').val()
+        var pn = 3;
+        var resultStr = ""
+        for(var i = 1;i < pn;i++){
+          //$(".content").html((pn*10)+'<br>')
+          $.ajax({
+            url:'http://www.baidu.com/s?wd='+novelName+'&pn='+(i*10)+'&rsv_spt=1&rsv_iqid=0xdd2c31de0003d13c&issp=1&f=3&rsv_bp=0&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=0&rsv_sug3=19&rsv_sug1=16&rsv_sug7=100&prefixsug='+novelName+'&rsp=8&inputT=6040&rsv_sug4=7275',
+            type:"GET",
+            async:false,
+            dataType:"text",
+            success:function(msg){
+              resultStr += processData(msg);
+            }
+          })
+        }
+        $(".content").html(resultStr)
+      }
+      
     </script>
   </html>
+
+
+
+
+
+
