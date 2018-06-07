@@ -1,11 +1,11 @@
 <!DOCTYPE html>
   <html>
     <head>
-      <script>
-         window.nodeRequire = require;
-         delete window.require;
-         delete window.exports;
-         delete window.module;
+      <script type="text/javascript">
+        window.nodeRequire = require;
+        delete window.require;
+        delete window.exports;
+        delete window.module;
       </script>
       <script type="text/javascript" src="jquery.min.js"></script>
       <meta charset="UTF-8">
@@ -45,35 +45,29 @@
     </body>
     <script type="text/javascript">
       function processData(resultMsg){
-        var titleStart = resultMsg.indexOf('"title":"')
-        var titleEnd = resultMsg.indexOf('","url":"')
-        var titleList = '<a href="#">' + resultMsg.substring(titleStart+9,titleEnd) + '</a>'
-        while(titleStart!=-1){
-          titleStart = resultMsg.indexOf('"title":"',titleStart+10)
-          titleEnd = resultMsg.indexOf('","url":"',titleEnd+10)
-          titleList += '<a href="#">' + resultMsg.substring(titleStart+9,titleEnd) + '</a>' + "<br />"
+        var reg = /title":"(.*?)","url":"(.*?)"\}/g
+        var resultArr = resultMsg.match(reg)//.toString()
+        var resultStr = ""
+        for(var i = 0;i < resultArr.length;i++){
+          resultArr[i] = resultArr[i].replace(/title":"/g,' ').replace(/","url":"/g,'--').replace(/"\}/,' ').replace("...",' ')
+          resultStr += '<a href="'+resultArr[i].split("--")[1]+'">'+resultArr[i].split("--")[0]+"</a><br />"
         }
-        return titleList
-              
-              //$(".content").html(titleList)
+
+        $(".content").html(resultStr)
+        resultStr = ""
       }
       function searchBtnClick(){
         var novelName = $('#novelNameInput').val()
-        var pn = 3;
-        var resultStr = ""
-        for(var i = 1;i < pn;i++){
+        var pn = 2;
           //$(".content").html((pn*10)+'<br>')
           $.ajax({
-            url:'http://www.baidu.com/s?wd='+novelName+'&pn='+(i*10)+'&rsv_spt=1&rsv_iqid=0xdd2c31de0003d13c&issp=1&f=3&rsv_bp=0&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=0&rsv_sug3=19&rsv_sug1=16&rsv_sug7=100&prefixsug='+novelName+'&rsp=8&inputT=6040&rsv_sug4=7275',
+            //url:'http://www.baidu.com/s?wd='+novelName+'&pn='+(i*10)+'&rsv_spt=1&rsv_iqid=0xdd2c31de0003d13c&issp=1&f=3&rsv_bp=0&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=0&rsv_sug3=19&rsv_sug1=16&rsv_sug7=100&prefixsug='+novelName+'&rsp=8&inputT=6040&rsv_sug4=7275',
+            url:'http://www.baidu.com/s?wd='+novelName+'&pn='+(1*10)+'&ie=utf-8&tn=84053098_3_dg',
             type:"GET",
-            async:false,
-            dataType:"text",
             success:function(msg){
-              resultStr += processData(msg);
+              processData(msg)
             }
           })
-        }
-        $(".content").html(resultStr)
       }
       
     </script>
